@@ -45,9 +45,9 @@ def find_best_policy():
         observations = env.reset()
         previous_state = bucketize(observations)
         for t in range(MAX_TIMESTAMPS):
-            #Don't render in order to reduce training time
-            # env.r ender()
-
+            #Uncomment if you want to see the training
+            # env.render()
+            
             #select best action at this state
             action = select_best_action(previous_state, exploration_rate)
 
