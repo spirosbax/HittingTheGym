@@ -2,6 +2,7 @@ import gym
 import random
 import math
 import numpy as np
+import time
 
 #Creating environment
 env_to_use = 'CartPole-v0'
@@ -10,9 +11,10 @@ env = gym.make(env_to_use)
 """Defining some constants"""
 
 MAX_EPISODES = 1000
-MAX_TIMESTAMPS = 250
-STREAK_TO_END = 120
-SOLVED = 199
+MAX_TIMESTAMPS = 100000
+STREAK_TO_END = 100
+SOLVED = 194
+RENDER = False
 DEBUG_MODE = True
 
 #Setting dimensions for each state dimension
@@ -33,7 +35,7 @@ q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
 MIN_EXPLORATION_RATE = 0.01
 MIN_LEARNING_RATE = 0.1
 
-def find_best_policy():
+def train(render=False):
     #Initializing learning and exploring rates
     learning_rate = get_learning_rate(0)
     print(learning_rate)
@@ -45,9 +47,9 @@ def find_best_policy():
         observations = env.reset()
         previous_state = bucketize(observations)
         for t in range(MAX_TIMESTAMPS):
-            #Uncomment if you want to see the training
-            # env.render()
-            
+            if render:
+                env.render()
+
             #select best action at this state
             action = select_best_action(previous_state, exploration_rate)
 
@@ -64,6 +66,12 @@ def find_best_policy():
             # Setting up for the next iteration
             previous_state = current_state
 
+            if done:
+                if t >= SOLVED:
+                    num_streaks += 1
+                else:
+                    num_streaks = 0
+
             if (DEBUG_MODE):
                 print("\nEpisode = %d" % ep)
                 print("t = %d" % t)
@@ -77,15 +85,11 @@ def find_best_policy():
                 print("")
 
             if done:
-                print("Episode {} finished after {} timestamps with {} streaks".format(ep+1, t+1, num_streaks))
-                if t >= SOLVED:
-                    num_streaks += 1
-                else:
-                    num_streaks = 0
+                print("Episode {} finished after {} timestamps with {} streaks".format(ep, t, num_streaks))
                 break
 
-        # It's considered done when it's solved over 120 times consecutively
-        if num_streaks > STREAK_TO_END:
+        # It's considered done when it's solved over 100 times consecutively
+        if num_streaks >= STREAK_TO_END:
             break
 
         # Update parameters
@@ -123,5 +127,22 @@ def get_exploration_rate(t):
 def get_learning_rate(t):
     return max(MIN_LEARNING_RATE, min(0.5, 1.0 - math.log10((t+1)/25)))
 
+def run(render=False):
+        observations = env.reset()
+        state = bucketize(observations)
+        while True:
+            env.render()
+            #select best action at this state
+            action = select_best_action(state, 0)
+            #Execute action
+            observations, reward, done, info = env.step(action)
+            #Get current state
+            state = bucketize(observations)
+            if done:
+                break
+
 if __name__ == "__main__":
-    find_best_policy()
+    t = time.time()
+    train()
+    print("Solved after {} seconds".format(time.time() - t))
+    run(True)
