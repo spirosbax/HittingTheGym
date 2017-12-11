@@ -35,6 +35,13 @@ q_table = np.zeros(NUM_BUCKETS + (NUM_ACTIONS,))
 MIN_EXPLORATION_RATE = 0.01
 MIN_LEARNING_RATE = 0.1
 
+def main():
+    t = time.time()
+    train()
+    print("Solved after {} seconds".format(time.time() - t))
+    run(True)
+
+
 def train(render=False):
     #Initializing learning and exploring rates
     learning_rate = get_learning_rate(0)
@@ -142,7 +149,4 @@ def run(render=False):
                 break
 
 if __name__ == "__main__":
-    t = time.time()
-    train()
-    print("Solved after {} seconds".format(time.time() - t))
-    run(True)
+    main()
