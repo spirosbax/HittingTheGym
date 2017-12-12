@@ -73,6 +73,8 @@ def obs_to_state(obs):
 if __name__ == '__main__':
     train(render=False)
     solution_policy = np.argmax(q_table, axis=2)
+    print("Solution policy")
+    print(q_table)
 
     # Animate it
     solution_policy_scores = [run(render=False, policy=solution_policy) for _ in range(100)]
