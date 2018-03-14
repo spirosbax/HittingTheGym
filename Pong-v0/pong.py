@@ -18,7 +18,7 @@ env = gym.make("Pong-v0")
 actions = env.action_space.n
 
 render = True
-resume = True # resume from previous checkpoint?
+resume = False # resume from previous checkpoint?
 path = 'weights.h5' # path to save weights
 
 def main():
