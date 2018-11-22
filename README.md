@@ -7,7 +7,7 @@
 </table>
 
 ## What is it?
-HittingTheGym is a repository implementing reinforcment learning algorithms using keras and tensorflow in python3.
+HittingTheGym is a repository implementing reinforcement learning algorithms using keras and tensorflow in python3.
 
 ## What's included
 * Policy Gradients
